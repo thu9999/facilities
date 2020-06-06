@@ -530,8 +530,6 @@ app.get(facilityAPI, (req, res) => {
     const itemsPerPage = +req.query.itemsPerPage;
     const search = req.query.search;
 
-    console.log(page, itemsPerPage)
-
     let data = [];
 
     const filterData = fakeData.filter(item => (item.name.toLowerCase()).includes(search.toLowerCase()));
@@ -539,7 +537,6 @@ app.get(facilityAPI, (req, res) => {
     filterData.forEach((item, i) => {
         if(i >= page * itemsPerPage && i < (page + 1) * itemsPerPage) {
             data.push(item);
-            console.log(i)
         }
     })
 
@@ -550,6 +547,22 @@ app.get(facilityAPI, (req, res) => {
     });
     res.end(json);
 });
+
+/**
+ * Get a facility having id
+ * @param id: id number of facility
+ */
+app.get(`${facilityAPI}/:id`, (req, res) => {
+    const id = +req.params.id;
+    
+    let facility = (fakeData.filter(facility => facility.facilityId === id))[0];
+
+    const json = JSON.stringify({
+        data: facility,
+        err: null
+    });
+    res.end(json);
+})
 
 /**
  * Create a new facility
@@ -573,6 +586,31 @@ app.post(facilityAPI, (req, res) => {
     };
 
     fakeData.push(newFacility);
+    const json = JSON.stringify({
+        data: true,
+        err: null
+    });
+
+    res.end(json);
+});
+
+/**
+ * Update a facility having id
+ * @param id: number. Facility's id
+ * @body data: facility
+ * 
+ */
+app.put(`${facilityAPI}/:id`, (req, res) => {
+    const id = +req.params.id;
+    const data = req.body;
+    fakeData = fakeData.map(facility => {
+        if(facility.facilityId === id) {
+            return {...data, facilityId: id, openedDate: (data.openedDate.replace('T', ' ')).replace('.000Z','')};
+        } else {
+            return facility;
+        }
+    });
+
     const json = JSON.stringify({
         data: true,
         err: null

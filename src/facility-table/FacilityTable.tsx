@@ -1,14 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './FacilityTable.scss';
-import { Table, Tag, Space, Button, Pagination, Tooltip, Popconfirm } from 'antd';
+import { Table, Tag, Button, Pagination, Tooltip, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { FacilityProps, TimeSlot, NestedTableProps, FacilityInterface } from '../interfaces';
+import { FacilityProps, TimeSlot, FacilityInterface } from '../interfaces';
 import avatar from './../images/avatar.png';
 import avatar1 from './../images/avatar1.png';
+import { gsap, Power1, TimelineLite } from 'gsap';
+
 
 const FacilityTable = (props: FacilityProps) => {
 
-    const { facilities, total, loading, onFacilityPagination, onPageSizeChange, onFacilityDeleted } = props;
+    const { facilities, total, loading, onFacilityPagination, onPageSizeChange, onFacilityEdited, onFacilityDeleted } = props;
+
+    let refs: any = [];
+
+    let tl: any = new TimelineLite();
+
+    const onDelete = (facilityId: number) => {
+       const tr = refs[facilityId].parentElement.parentElement;
+        tl = gsap.to(tr, 1, {
+            x: 120,
+            opacity: 0,
+            height: '0px',
+            display: 'none',
+            reversed: false,
+            ease: Power1.easeInOut,
+            onComplete: () => {
+                onFacilityDeleted(facilityId, tl);
+            }
+        })
+    }
 
     const columns = [
         {
@@ -60,17 +81,19 @@ const FacilityTable = (props: FacilityProps) => {
             dataIndex: 'facilityId',
             key: 'action',
             render: (facilityId: number) => 
-                <>
+                <div ref={ref => refs[facilityId] = ref} >
                     <Tooltip title="Edit">
-                        <Button className='action-button' shape='circle' icon={<EditOutlined />} style={{backgroundColor: '#2db7f5', color: '#fff'}} /> 
+                        <Button className='action-button' shape='circle' icon={<EditOutlined />} style={{backgroundColor: '#2db7f5', color: '#fff'}} onClick={() => onFacilityEdited(facilityId)} /> 
                     </Tooltip>
 
                     <Tooltip title="Delete">
-                        <Popconfirm placement="bottom" title='Are you sure to delete the facility?' onConfirm={() => onFacilityDeleted(facilityId)} okText="Yes" cancelText="No">
+                        <Popconfirm placement="bottom" title='Are you sure to delete the facility?' onConfirm={() => {
+                            onDelete(facilityId);
+                        }} okText="Yes" cancelText="No">
                             <Button className='action-button' shape='circle' icon={<DeleteOutlined/>} type="primary" danger />
                         </Popconfirm>
                     </Tooltip>
-                </>
+                </div>
         }
     ];
     
@@ -125,6 +148,6 @@ const FacilityTable = (props: FacilityProps) => {
             </div>
         </>
     );
-}
+};
 
 export default FacilityTable;

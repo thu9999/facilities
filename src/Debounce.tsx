@@ -18,7 +18,7 @@ const Debounce = (props: DebounceInterface) => {
         return () => {
             clearTimeout(handler);
         };
-    }, [value])
+    }, [value, delay])
 
     return debounceValue;
 }

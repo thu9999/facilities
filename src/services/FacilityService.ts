@@ -17,6 +17,16 @@ const getFacilities = (page: number, itemsPerPage: number, searchValue: string) 
 }
 
 /**
+ * Get a facility which has id
+ * @param id: number
+ * @retun a facility: FacilityInterface
+ */
+const getFacility = (id: number) => {
+    return http.get(`facility/${id}`);
+}
+
+
+/**
  * Create a facility
  * @body data: FacilityForm
  */
@@ -31,7 +41,7 @@ const createFacility = (data: FacilityFormValue) => {
  * @body data: FacilityForm
  */
 
-const updateFacility = (id: number, data: FacilityFormValue) => {
+const updateFacility = (id: number | undefined, data: FacilityFormValue) => {
     return http.put(`/facility/${id}`, data);
 }
 
@@ -46,6 +56,7 @@ const deleteFacility = (id: number) => {
 
 export default {
     getFacilities,
+    getFacility,
     createFacility,
     updateFacility,
     deleteFacility

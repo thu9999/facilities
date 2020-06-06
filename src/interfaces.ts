@@ -13,9 +13,7 @@ export interface AppMenu {
 }
 
 export interface FacilityFormProp {
-    visible: boolean 
     handleOk(data: FacilityFormValue): void 
-    handleCancel(): void 
 }
 
 export interface TimeSlot {
@@ -47,7 +45,13 @@ export interface FacilityProps {
     loading: boolean
     onFacilityPagination(page: number): void
     onPageSizeChange(current: number, size: number): void
-    onFacilityDeleted(id: number): void
+    onFacilityEdited(id: number): void
+    onFacilityDeleted(id: number, tl: any): void
+}
+
+export interface FacilityEditedFormValue {
+    facility: FacilityInterface | undefined,
+    handleOk(data: FacilityFormValue): void 
 }
 
 export interface NestedTableProps {

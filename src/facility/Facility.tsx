@@ -5,8 +5,10 @@ import FacilityTable from '../facility-table/FacilityTable';
 import { PlusOutlined } from '@ant-design/icons';
 import Debounce from './../Debounce';
 import FacilityService from './../services/FacilityService';
-import { FacilityFormValue } from '../interfaces';
+import { FacilityFormValue, FacilityInterface } from '../interfaces';
 import FacilityForm from '../facility-form/FacilityForm';
+import FacilityEditedForm from '../facility-edit-form/FacilityEditedForm';
+import Modal from 'antd/lib/modal/Modal';
 
 const { Search } = Input;
 
@@ -15,7 +17,10 @@ const delayTime = 500;
 function Facility() {
 
     // Facility list
-    const [facilities, setFacilities] = useState([]);
+    const [facilities, setFacilities] = useState<FacilityInterface[]>([]);
+
+    // A facility item
+    const [facility, setFacility] = useState<FacilityInterface>();
 
     // Total number of facilities
     const [total, setTotal] = useState<number>(23);
@@ -30,6 +35,9 @@ function Facility() {
 
     // Facility form visible
     const [visible, setVisible] = useState<boolean>(false);
+
+    // Facility edited form visible
+    const [editedVisible, setEditedVisible] = useState(false);
 
     // Facility table is loading data
     const [facilityLoading, setFacilityLoading] = useState<boolean>(false);
@@ -51,6 +59,7 @@ function Facility() {
 
         const result = await FacilityService.getFacilities(page, itemsPerPage, debounceSearchValue);
 
+        console.log(result.data.data)
         // Update facility loading status to false
         setFacilityLoading(false);
 
@@ -71,7 +80,6 @@ function Facility() {
         setPage(0);
         setItemsPerPage(size);
     }
-
 
     // Event on facility search
     // Reset page to first one
@@ -96,15 +104,55 @@ function Facility() {
                 // Update facility list
                 fetchFacilities();
             } else {
-                 // Notify error
+                // Notify error
                  message.error('Something went wrong!', 1);
+            }
+        })
+    }
+
+    // Handle event on editing a facility having id
+    const handleFacilityEdited = (id: number) => {
+
+        // Get facility data
+        FacilityService.getFacility(id).then(res => {
+            if(res.data.data) {
+                setFacility(res.data.data);
+
+                // Open edited facility form
+                setEditedVisible(true);
+            } else {
+                // Display error
+                message.error('Oops! Something went wrong.')
+            }
+          
+        })
+    }
+
+    // Handle event on edited ok
+    const handleFacilityEditedOk = (values: FacilityInterface) => {
+        FacilityService.updateFacility(facility?.facilityId, values).then(res => {
+            
+            // Update facility successfully
+            if(res.data.data) {
+                // Display successfully message
+                message.success('Facility has been updated successfully!', 1);
+
+                // Close the edited form
+                setEditedVisible(false);
+
+                // Update new list
+                fetchFacilities();
+
+            } else {
+                // Display error message
+                message.error('Facility has not been updated yet!', 1);
             }
         })
     }
 
     // Handle event on deleting a facility having id
     // Delete facility and update new list of facility
-    const handleFacilityDeleted = (id: number) => {
+    const handleFacilityDeleted = (id: number, tl: any) => {
         FacilityService.deleteFacility(id).then(res => {
             // Delete facility having id successfully
             if(res.data.data) {
@@ -119,6 +167,10 @@ function Facility() {
                  *  Display error message
                  */
                 message.error('Oops! Something went wrong!', 1);
+
+                // Reverse timeline 
+                tl.reverse();
+                
             }
         })
     }
@@ -137,11 +189,29 @@ function Facility() {
                 </Col>
             </Row>
 
-                <p>{visible}</p>
+            <Modal
+                title='NEW FACILITY'
+                footer={null}
+                closable={true}
+                visible={visible}
+                onCancel={() => {
+                    setVisible(false)
+                }}
+            >
+                <FacilityForm handleOk={handleFacilityCreated} />
+            </Modal>
 
-            <FacilityForm visible={visible} handleOk={handleFacilityCreated} handleCancel={() => {
-                setVisible(false);
-            }} />
+            <Modal
+                title='EDIT FACILITY'
+                footer={null}
+                closable={true}
+                visible={editedVisible}
+                onCancel={() => {
+                    setEditedVisible(false)
+                }}
+            >
+                <FacilityEditedForm facility={facility} handleOk={handleFacilityEditedOk} />
+            </Modal>
 
             <FacilityTable 
                 facilities={facilities} 
@@ -149,6 +219,7 @@ function Facility() {
                 loading={facilityLoading}  
                 onFacilityPagination={handlePaginationChange} 
                 onPageSizeChange={handlePageSizeChange}
+                onFacilityEdited={handleFacilityEdited}
                 onFacilityDeleted={handleFacilityDeleted}
             />
         </>
