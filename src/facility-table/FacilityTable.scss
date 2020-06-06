@@ -1,0 +1,23 @@
+.action-button {
+    margin-right: 8px;
+}
+
+.facility-pagination {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.avatar-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.timeslot-avatar {
+    width: 36px;
+    border-radius: 50%;
+}
+
+.next-avatar {
+    transform: translateX(-16px);
+}
