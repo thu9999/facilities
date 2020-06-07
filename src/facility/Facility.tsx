@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './Facility.scss';
 import { Row, Col, Button, message, Input } from 'antd';
 import FacilityTable from '../facility-table/FacilityTable';
@@ -45,30 +45,31 @@ function Facility() {
     // Debounce search value
     const debounceSearchValue = Debounce({value: searchValue, delay: delayTime});
 
-    useEffect(() => {
-        fetchFacilities();
-    }, [page, itemsPerPage, debounceSearchValue]);
-
-    /**
+        /**
      * Get list of facilities
      */
-    const fetchFacilities  = async () => {
+    const fetchFacilities  = useCallback(
+        async () => {
 
-        // Set facility loading status 
-        setFacilityLoading(true);
+            // Set facility loading status 
+            setFacilityLoading(true);
+    
+            const result = await FacilityService.getFacilities(page, itemsPerPage, debounceSearchValue);
+    
+            // Update facility loading status to false
+            setFacilityLoading(false);
+    
+            // Update new list of facilities
+            setFacilities(result.data.data);
+    
+            // Update total number of facilities
+            setTotal(result.data.total);
+    }, [debounceSearchValue, itemsPerPage, page]);
 
-        const result = await FacilityService.getFacilities(page, itemsPerPage, debounceSearchValue);
 
-        console.log(result.data.data)
-        // Update facility loading status to false
-        setFacilityLoading(false);
-
-        // Update new list of facilities
-        setFacilities(result.data.data);
-
-        // Update total number of facilities
-        setTotal(result.data.total);
-    };
+    useEffect(() => {
+        fetchFacilities();
+    }, [page, itemsPerPage, debounceSearchValue, fetchFacilities]);
 
     // Event on pagination change
     const handlePaginationChange = (page: number) => {

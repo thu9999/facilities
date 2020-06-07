@@ -68,3 +68,33 @@ export interface FacilityFormValue {
     type: string 
     blocks: number[]
 }
+
+export interface ScheduleItem {
+    type: 'warning' | 'success' | 'error' | 'processing' | 'default' | undefined
+    facility: string 
+    userId: number 
+    range: [number, number]
+}
+
+export interface TimelineProp {
+    schedules: ScheduleItem[]
+}
+
+
+export interface TimelineData {
+    name: string 
+    from: number 
+    to: number
+}
+
+export interface TimelineOptions {
+    margin: Margin
+    title: string 
+}
+
+export interface Margin {
+    top: number 
+    right: number 
+    bottom: number 
+    left: number
+}

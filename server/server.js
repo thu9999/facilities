@@ -1,6 +1,10 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
+
+// Datefns
+const isEqual = require('date-fns/isEqual');
+const isBefore = require('date-fns/isBefore');
 
 // Parse URL-encoded bodies
 app.use(bodyParser.urlencoded({
@@ -27,20 +31,20 @@ let fakeData = [
       timeslots: [
           {
               userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
+              pickedUpFrom: '2020-06-01 10:00:00',
+              pickedUpTo: '2020-06-01 11:00:00',
               key: 1
           },
           {
               userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
+              pickedUpFrom: '2020-06-02 17:00:00',
+              pickedUpTo: '2020-06-02 20:00:00',
               key: 2
           },
           {
             userId: 3,
-            pickedUpFrom: '2020-05-20 21:00:00',
-            pickedUpTo: '2020-05-20 22:00:00',
+            pickedUpFrom: '2020-06-03 21:00:00',
+            pickedUpTo: '2020-06-03 22:00:00',
             key: 3
         },
       ],
@@ -55,8 +59,8 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-04 10:00:00',
+               pickedUpTo: '2020-06-04 11:00:00',
                key: 1
            },
            {
@@ -77,8 +81,8 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-05 10:00:00',
+               pickedUpTo: '2020-06-05 11:00:00',
                key: 1
            }
        ],
@@ -93,26 +97,26 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-06 10:00:00',
+               pickedUpTo: '2020-06-06 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-07 17:00:00',
+               pickedUpTo: '2020-06-07 20:00:00',
                key: 2
            },
            {
             userId: 3,
-            pickedUpFrom: '2020-05-21 09:00:00',
-            pickedUpTo: '2020-05-21 11:00:00',
+            pickedUpFrom: '2020-06-08 09:00:00',
+            pickedUpTo: '2020-06-08 11:00:00',
             key: 3
         },
         {
             userId: 4,
-            pickedUpFrom: '2020-05-22 14:00:00',
-            pickedUpTo: '2020-05-23 16:00:00',
+            pickedUpFrom: '2020-06-09 14:00:00',
+            pickedUpTo: '2020-06-09 16:00:00',
             key: 4
         },
        ],
@@ -127,14 +131,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-01 10:00:00',
+               pickedUpTo: '2020-06-01 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-02 17:00:00',
+               pickedUpTo: '2020-06-02 20:00:00',
                key: 2
            },
        ],
@@ -149,14 +153,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-20 10:00:00',
+               pickedUpTo: '2020-06-20 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-21 17:00:00',
+               pickedUpTo: '2020-06-21 20:00:00',
                key: 2
            },
        ],
@@ -171,14 +175,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-23 10:00:00',
+               pickedUpTo: '2020-06-23 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-24 17:00:00',
+               pickedUpTo: '2020-06-24 20:00:00',
                key: 2
            },
        ],
@@ -193,14 +197,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-25 10:00:00',
+               pickedUpTo: '2020-06-25 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-26 17:00:00',
+               pickedUpTo: '2020-06-26 20:00:00',
                key: 2
            },
        ],
@@ -215,14 +219,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-12 10:00:00',
+               pickedUpTo: '2020-06-12 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-13 17:00:00',
+               pickedUpTo: '2020-06-13 20:00:00',
                key: 2
            },
        ],
@@ -237,14 +241,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-14 10:00:00',
+               pickedUpTo: '2020-06-14 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-15 17:00:00',
+               pickedUpTo: '2020-06-15 20:00:00',
                key: 2
            },
        ],
@@ -259,14 +263,14 @@ let fakeData = [
        timeslots: [
            {
                userId: 1,
-               pickedUpFrom: '2020-05-20 10:00:00',
-               pickedUpTo: '2020-05-20 11:00:00',
+               pickedUpFrom: '2020-06-16 10:00:00',
+               pickedUpTo: '2020-06-16 11:00:00',
                key: 1
            },
            {
                userId: 2,
-               pickedUpFrom: '2020-05-20 17:00:00',
-               pickedUpTo: '2020-05-20 20:00:00',
+               pickedUpFrom: '2020-06-17 17:00:00',
+               pickedUpTo: '2020-06-17 20:00:00',
                key: 2
            },
        ],
@@ -281,14 +285,14 @@ let fakeData = [
       timeslots: [
           {
               userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
+              pickedUpFrom: '2020-06-02 10:00:00',
+              pickedUpTo: '2020-06-02 11:00:00',
               key: 1
           },
           {
               userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
+              pickedUpFrom: '2020-06-13 17:00:00',
+              pickedUpTo: '2020-06-13 18:00:00',
               key: 2
           },
       ],
@@ -303,14 +307,14 @@ let fakeData = [
       timeslots: [
           {
               userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
+              pickedUpFrom: '2020-06-21 08:00:00',
+              pickedUpTo: '2020-06-21 11:00:00',
               key: 1
           },
           {
               userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
+              pickedUpFrom: '2020-06-24 17:00:00',
+              pickedUpTo: '2020-06-24 18:00:00',
               key: 2
           },
       ],
@@ -325,14 +329,14 @@ let fakeData = [
       timeslots: [
           {
               userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
+              pickedUpFrom: '2020-06-07 10:00:00',
+              pickedUpTo: '2020-06-07 13:00:00',
               key: 1
           },
           {
               userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
+              pickedUpFrom: '2020-06-08 17:00:00',
+              pickedUpTo: '2020-06-08 19:00:00',
               key: 2
           },
       ],
@@ -347,173 +351,19 @@ let fakeData = [
       timeslots: [
           {
               userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
+              pickedUpFrom: '2020-06-19 10:00:00',
+              pickedUpTo: '2020-06-19 11:00:00',
               key: 1
           },
           {
               userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
+              pickedUpFrom: '2020-06-20 17:00:00',
+              pickedUpTo: '2020-06-20 20:00:00',
               key: 2
           },
       ],
       key: 14
-  },
-  {
-      facilityId: 16,
-      name: 'Gym Club',
-      type: 'internal',
-      openedDate: '2018-01-05 10:00:00',
-      blocks: [1,2],
-      timeslots: [
-          {
-              userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
-              key: 1
-          },
-          {
-              userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
-              key: 2
-          },
-      ],
-      key: 15
-  },
-  {
-      facilityId: 17,
-      name: 'Yoga Curtains',
-      type: 'external',
-      openedDate: '2018-01-06 10:00:00',
-      blocks: [3,4],
-      timeslots: [
-          {
-              userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
-              key: 1
-          },
-          {
-              userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
-              key: 2
-          },
-      ],
-      key: 16
-  },
-  {
-      facilityId: 18,
-      name: 'Kyak',
-      type: 'internal',
-      openedDate: '2018-01-07 10:00:00',
-      blocks: [1,2],
-      timeslots: [
-          {
-              userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
-              key: 1
-          },
-          {
-              userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
-              key: 2
-          },
-      ],
-      key: 17
-  },
-  {
-      facilityId: 19,
-      name: 'River side',
-      type: 'external',
-      openedDate: '2018-01-08 10:00:00',
-      blocks: [3,4],
-      timeslots: [
-          {
-              userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
-              key: 1
-          },
-          {
-              userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
-              key: 2
-          },
-      ],
-      key: 18
-  },
-  {
-      facilityId: 20,
-      name: 'Tennis Yard',
-      type: 'internal',
-      openedDate: '2018-01-09 10:00:00',
-      blocks: [1,2],
-      timeslots: [
-          {
-              userId: 1,
-              pickedUpFrom: '2020-05-20 10:00:00',
-              pickedUpTo: '2020-05-20 11:00:00',
-              key: 1
-          },
-          {
-              userId: 2,
-              pickedUpFrom: '2020-05-20 17:00:00',
-              pickedUpTo: '2020-05-20 20:00:00',
-              key: 2
-          },
-      ],
-      key: 19
-  },
-  {
-      facilityId: 21,
-      name: 'River side',
-      type: 'external',
-      openedDate: '2018-01-08 10:00:00',
-      blocks: [3,4],
-      timeslots: [
-         {
-            userId: 1,
-            pickedUpFrom: '2020-05-20 10:00:00',
-            pickedUpTo: '2020-05-20 11:00:00',
-            key: 1
-         },
-         {
-            userId: 2,
-            pickedUpFrom: '2020-05-20 17:00:00',
-            pickedUpTo: '2020-05-20 20:00:00',
-            key: 2
-         },
-      ],
-      key: 20
-   },
-   {
-      facilityId: 22,
-      name: 'Tennis Yard',
-      type: 'internal',
-      openedDate: '2018-01-09 10:00:00',
-      blocks: [1,2],
-      timeslots: [
-         {
-            userId: 1,
-            pickedUpFrom: '2020-05-20 10:00:00',
-            pickedUpTo: '2020-05-20 11:00:00',
-            key: 1
-         },
-         {
-            userId: 2,
-            pickedUpFrom: '2020-05-20 17:00:00',
-            pickedUpTo: '2020-05-20 20:00:00',
-            key: 2
-         },
-      ],
-      key: 21
-   }
+  }
 ];
 
 const facilityAPI = '/api/facility';
@@ -646,6 +496,60 @@ app.delete(`${facilityAPI}/:id`, (req, res) => {
     
         res.end(json);
     }
+
+})
+
+
+
+// Schedule api
+const scheduleAPI = '/api/schedule';
+
+/**
+ * Get schedule list of a date
+ * @param dateime: string
+ */
+app.get(`${scheduleAPI}/:dateime`, (req, res) => {
+    const datetime = req.params.dateime;
+    let schedules = [];
+
+    fakeData.forEach(item => {
+        const facility = item.name;
+        if(item.timeslots && item.timeslots.length) {
+            item.timeslots.forEach(timeslot => {
+                const equal = isEqual(
+                    new Date(datetime.slice(0,10)),
+                    new Date(timeslot.pickedUpFrom.slice(0,10))
+                );
+
+                const past = isBefore(
+                    new Date(datetime),
+                    new Date()
+                );
+
+                const future = isBefore(
+                    new Date(),
+                    new Date(datetime)
+                );
+
+
+                if(equal) {
+                    schedules.push({
+                        type: past ? 'warning' : (future ? 'success' : 'processing'),
+                        facility: `${facility} `,
+                        userId: item.userId,
+                        range: [(new Date(timeslot.pickedUpFrom)).getHours(), (new Date(timeslot.pickedUpTo)).getHours()]
+                    })
+                }
+            })
+        }
+    })
+    
+    const json = JSON.stringify({
+        data: schedules,
+        err: null
+    });
+
+    res.end(json);
 
 })
 

@@ -63,7 +63,7 @@ function App() {
                     <img src={avatar} alt='avatar'/>
                 </div>
 
-                <Menu theme='dark' mode='inline' defaultSelectedKeys={['1']}>
+                <Menu theme='dark' mode='inline'>
                     {menus ? menus.map(menu => <Menu.Item key={menu.id} icon={menu.icon} onClick={() => {
                         history.push(menu.route)
                     }}>{menu.title}</Menu.Item>) : false}
@@ -84,9 +84,11 @@ function App() {
                     <Suspense fallback={<div>Loading...</div>}>
                         <Switch>
                             {routes ? routes.map(route =><Route key={route.id} path={route.path} component={route.component} />) : false}
+
+                            <Redirect exact from='/' to='/facility' />
                         </Switch>
 
-                        <Redirect exact from='/' to='/facility' />
+                        
                     </Suspense>
                 </Content>
 
