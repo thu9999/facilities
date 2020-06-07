@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-
+const path = require('path');
 // Datefns
 const isEqual = require('date-fns/isEqual');
 const isBefore = require('date-fns/isBefore');
@@ -21,10 +21,15 @@ app.use((req, res, next) => {
    next();
 });
 
-app.use(express.static('./../build'));
+// Serve the static files from the React app
 
-app.get('/', (req, res) => {
-    res.sendFile('index.html', { root: './../build/index.html'});
+app.use(express.static(path.join(__dirname, '/build')));
+
+console.log(__dirname)
+
+// Handles any requests that don't match the ones above
+app.get('*', (req,res) =>{
+    res.sendFile(path.join(__dirname+'/build/index.html'));
 });
 
 

@@ -1,5 +1,5 @@
 const CONFIG = {
-    server: 'http://localhost:8080/api'
+    server: 'https://schedule-facility.herokuapp.com//api'
 }
 
 export default CONFIG;
