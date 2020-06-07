@@ -3,7 +3,7 @@ This project includes 2 parts: Server and Client
 - Run server by script: npm start 
 - Server was written in nodejs
 
-- Build client by script: npm build
+- Run client by script: npm start
 - API config at config.ts
 - Interface includes two page: facility and schedule
 

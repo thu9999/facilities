@@ -26,7 +26,7 @@ export const DateCellRender = (date: Moment) => {
 
     return (
         <ul className='events'>
-            {schedules.map(item => (
+            {schedules?.map(item => (
                 <li key={item.facility}>
                     <Badge status={item.type} text={item.facility}/>
                 </li>
