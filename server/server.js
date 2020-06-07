@@ -21,6 +21,13 @@ app.use((req, res, next) => {
    next();
 });
 
+app.use(express.static('./../build'));
+
+app.get('/', (req, res) => {
+    res.sendFile('index.html', { root: './../build/index.html'});
+});
+
+
 let fakeData = [
    {
       facilityId: 1,
