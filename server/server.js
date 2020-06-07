@@ -554,6 +554,47 @@ app.get(`${scheduleAPI}/:dateime`, (req, res) => {
 
 })
 
+/**
+ * Add new schedule
+ */
+app.post(`${scheduleAPI}`, (req, res) => {
+    const value = req.body;
+    let newFakeData =[...fakeData];
+    newFakeData.forEach(item => {
+        if(item.facilityId === +value.facilityId) {
+            console.log(value)
+            item.timeslots.push(value)
+        }
+    });
+
+    fakeData = newFakeData;
+    const json = JSON.stringify({
+        data: true,
+        err: null
+    });
+
+    res.end(json);
+})
+
+/**
+ * Facility items for creating new schedule
+ */
+app.get('/api/facility-items', (req, res) => {
+    const items = fakeData.map(item => {
+        return {
+            facilityId: item.facilityId,
+            name: item.name
+        }
+    });
+
+    const json = JSON.stringify({
+        data: items,
+        err: null
+    });
+
+    res.end(json);
+})
+
 const PORT = process.env.PORT || 8080;
 
 var server = app.listen(PORT,  (err) => {

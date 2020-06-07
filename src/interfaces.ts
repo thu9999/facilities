@@ -98,3 +98,27 @@ export interface Margin {
     bottom: number 
     left: number
 }
+
+export interface FacilityItem {
+    facilityId: number 
+    name: string
+}
+
+export interface ScheduleFormProp {
+    facilities: FacilityItem[]
+    handleOk(value: ScheduleFormValue): void
+}
+
+export interface ScheduleFormValue {
+    facilityId: number 
+    userId: number  
+    pickedUpFrom: any
+    pickedUpTo: any
+}
+
+export interface ScheduleValue {
+    facilityId: number 
+    userId: number  
+    pickedUpFrom: string
+    pickedUpTo: string
+}

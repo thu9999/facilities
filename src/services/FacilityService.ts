@@ -54,10 +54,19 @@ const deleteFacility = (id: number) => {
     return http.delete(`/facility/${id}`);
 }
 
+/**
+ * Get list of facility items
+ * 
+ */
+const getFacilityItems = () => {
+    return http.get('/facility-items');
+}
+
 export default {
     getFacilities,
     getFacility,
     createFacility,
     updateFacility,
-    deleteFacility
+    deleteFacility,
+    getFacilityItems
 };
